@@ -46,7 +46,7 @@ void sys_exit()
 {  
 }
 
-char buffer_copy[];
+char buffer_copy[4];
 
 int sys_write(int fd, char * buffer, int size)
 {
@@ -60,8 +60,15 @@ int sys_write(int fd, char * buffer, int size)
 		else 
 		{
 			errcode = size;
-			int error = copy_from_user(buffer, buffer_copy, size);
-			if (error < 0) return error;
+			int error = 0;
+			int copied = 0;
+			while (error >= 0 &&  copied < size){
+				int sizeOfCopy = min(4, size - copied); 
+				error = copy_from_user(buffer, buffer_copy, sizeOfCopy);
+				if (error < 0) return error;
+				sys_write_console(buffer_copy,sizeOfCopy);
+				copied += 4;
+			}
 		}
 	}
 	return errcode;

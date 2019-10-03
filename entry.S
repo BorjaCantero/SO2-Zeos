@@ -71,19 +71,14 @@
 ENTRY(keyboard_handler)
 	SAVE_ALL
 	EOI
-	#call enter_system
 	call keyboard_routine
-	#call qualsevol
-	#call leave_system
 	RESTORE_ALL
 	iret
 
 /**ENTRY(clock_handler)
 	SAVE_ALL
 	EOI
-	call enter_system
 	call clock_routine
-	call leave_system
 	RESTORE_ALL
 	iret**/
 
