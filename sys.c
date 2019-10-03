@@ -60,8 +60,8 @@ int sys_write(int fd, char * buffer, int size)
 		else 
 		{
 			errcode = size;
-			int = copy_from_user(buffer, buffer_copy, size);
-			// Fa coses
+			int error = copy_from_user(buffer, buffer_copy, size);
+			if (error < 0) return error;
 		}
 	}
 	return errcode;
