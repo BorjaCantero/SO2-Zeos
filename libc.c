@@ -14,7 +14,22 @@ void perror (){
   write(1, "ERROR TYPE: ",12);
   switch(errno){
     case EBADF:
-      write(1, , strlen(""));
+      write(1, "Bad file number\n", 16);
+      break;
+    case EACCES:
+      write(1, "Permission denied\n", 18);
+      break;
+    case EFAULT:
+      write(1, "Bad address\n", 12);
+      break;
+    case EINVAL:
+      write(1, "Invalid argument\n", 17);
+      break;
+    case ENOSYS:
+      write(1, "Function not implemented\n", 25);
+      break;
+    default:
+      write(1, "Unknown error\n", 14);
   }
 }
 
