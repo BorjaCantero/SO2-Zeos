@@ -43,3 +43,19 @@ int strlen(char *a)
   return i;
 }
 
+int write(int fd, char * buffer, int size){
+  int resultat;
+  __asm__ volatile(
+          "movl %1, %%ebx;"
+          "movl %2, %%ecx;"
+          "movl %3, %%edx;"
+          "movl $4, %%eax;"
+          "int $0x80;"
+          "movl %%eax, %0;"
+          : "=g" (resultat)
+          : "g" (fd), "g"(buffer), "g" (size)
+          : "ax", "bx", "cx", "dx"
+    );
+
+}
+
