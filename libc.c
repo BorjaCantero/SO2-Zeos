@@ -6,7 +6,14 @@
 
 #include <types.h>
 
+#include <errno.h>
+
 int errno;
+
+void perror (){
+  write(1, "ERROR TYPE: ",12);
+  write(1, errorDescription[errno-1] + "\n", strlen(errorDescription[errno-1])+1);
+}
 
 void itoa(int a, char *b)
 {
@@ -44,8 +51,9 @@ int strlen(char *a)
 }
 
 int write(int fd, char * buffer, int size){
-  int resultat;
-  __asm__ volatile(
+  int resultat = -1;
+
+  __asm__ __volatile__(
           "movl %1, %%ebx;"
           "movl %2, %%ecx;"
           "movl %3, %%edx;"
@@ -56,6 +64,12 @@ int write(int fd, char * buffer, int size){
           : "g" (fd), "g"(buffer), "g" (size)
           : "ax", "bx", "cx", "dx"
     );
+
+  if (resultat < 0){
+    errno = ret;
+    return -1;
+  }
+  else return resultat;
 
 }
 
