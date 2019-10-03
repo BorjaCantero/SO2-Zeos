@@ -62,7 +62,7 @@ bootsect.o: bootsect.s
 bootsect.s: bootsect.S Makefile
 	$(CPP) $(ASMFLAGS) -traditional $< -o $@
 
-entry.s: entry.S $(INCLUDEDIR)/asm.h $(INCLUDEDIR)/segment.h $(INCLUDEDIR)/keyboard.h
+entry.s: entry.S $(INCLUDEDIR)/asm.h $(INCLUDEDIR)/segment.h # $(INCLUDEDIR)/keyboard.h $(INCLUDEDIR)/errno.h $(INCLUDEDIR)/sys_call_table.h 
 	$(CPP) $(ASMFLAGS) -o $@ $<
 
 sys_call_table.s: sys_call_table.S $(INCLUDEDIR)/asm.h $(INCLUDEDIR)/segment.h
@@ -70,7 +70,7 @@ sys_call_table.s: sys_call_table.S $(INCLUDEDIR)/asm.h $(INCLUDEDIR)/segment.h
 
 user.o:user.c $(INCLUDEDIR)/libc.h
 
-interrupt.o:interrupt.c $(INCLUDEDIR)/interrupt.h $(INCLUDEDIR)/segment.h $(INCLUDEDIR)/types.h $(INCLUDEDIR)/entry.h
+interrupt.o:interrupt.c $(INCLUDEDIR)/interrupt.h $(INCLUDEDIR)/segment.h $(INCLUDEDIR)/types.h
 
 keyboard.o:keyboard.c $(INCLUDEDIR)/keyboard.h $(INCLUDEDIR)/io.h
 
@@ -82,12 +82,12 @@ libc.o:libc.c $(INCLUDEDIR)/libc.h
 
 mm.o:mm.c $(INCLUDEDIR)/types.h $(INCLUDEDIR)/mm.h
 
-sys.o:sys.c $(INCLUDEDIR)/devices.h
+sys.o:sys.c $(INCLUDEDIR)/devices.h 
 
 utils.o:utils.c $(INCLUDEDIR)/utils.h
 
 
-system.o:system.c $(INCLUDEDIR)/hardware.h system.lds $(SYSOBJ) $(INCLUDEDIR)/segment.h $(INCLUDEDIR)/types.h $(INCLUDEDIR)/interrupt.h $(INCLUDEDIR)/system.h $(INCLUDEDIR)/sched.h $(INCLUDEDIR)/mm.h $(INCLUDEDIR)/io.h $(INCLUDEDIR)/mm_address.h 
+system.o:system.c $(INCLUDEDIR)/hardware.h system.lds $(SYSOBJ) $(INCLUDEDIR)/segment.h $(INCLUDEDIR)/types.h $(INCLUDEDIR)/interrupt.h $(INCLUDEDIR)/system.h $(INCLUDEDIR)/sched.h $(INCLUDEDIR)/mm.h $(INCLUDEDIR)/io.h $(INCLUDEDIR)/mm_address.h  
 
 
 system: system.o system.lds $(SYSOBJ)

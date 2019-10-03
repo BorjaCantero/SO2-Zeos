@@ -9,4 +9,6 @@ void keyboard_handler();
 
 void system_call_handler();
 
+void clock_handler();
+
 #endif  /* __ENTRY_H__ */

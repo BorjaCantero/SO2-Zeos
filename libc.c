@@ -12,7 +12,10 @@ int errno;
 
 void perror (){
   write(1, "ERROR TYPE: ",12);
-  write(1, errorDescription[errno-1] + "\n", strlen(errorDescription[errno-1])+1);
+  switch(errno){
+    case EBADF:
+      write(1, , strlen(""));
+  }
 }
 
 void itoa(int a, char *b)
@@ -66,7 +69,7 @@ int write(int fd, char * buffer, int size){
     );
 
   if (resultat < 0){
-    errno = ret;
+    errno = resultat;
     return -1;
   }
   else return resultat;
