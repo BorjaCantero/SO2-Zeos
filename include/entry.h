@@ -11,4 +11,8 @@ void system_call_handler();
 
 void clock_handler();
 
+void syscall_handler_sysenter(int);
+
+int gettime();
+
 #endif  /* __ENTRY_H__ */

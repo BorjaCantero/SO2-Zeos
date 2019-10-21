@@ -2,6 +2,7 @@
  * system.c - 
  */
 
+#include <entry.h>
 #include <segment.h>
 #include <types.h>
 #include <interrupt.h>
@@ -11,7 +12,9 @@
 #include <mm.h>
 #include <io.h>
 #include <utils.h>
-#include <zeos_mm.h> /* TO BE DELETED WHEN ADDED THE PROCESS MANAGEMENT CODE TO BECOME MULTIPROCESS */
+#include <zeos_mm.h>
+#include <MSR.h>
+ /* TO BE DELETED WHEN ADDED THE PROCESS MANAGEMENT CODE TO BECOME MULTIPROCESS */
 
 
 int (*usr_main)(void) = (void *) PH_USER_START;
@@ -19,6 +22,7 @@ unsigned int *p_sys_size = (unsigned int *) KERNEL_START;
 unsigned int *p_usr_size = (unsigned int *) KERNEL_START+1;
 unsigned int *p_rdtr = (unsigned int *) KERNEL_START+2;
 
+extern int zeos_ticks;
 /************************/
 /** Auxiliar functions **/
 /************************/
@@ -61,6 +65,7 @@ int __attribute__((__section__(".text.main")))
   main(void)
 {
 
+  //zeos_ticks = 0;
   set_eflags();
 
   /* Define the kernel segment registers  and a stack to execute the 'main' code */
@@ -78,6 +83,9 @@ int __attribute__((__section__(".text.main")))
   /* Initialize hardware data */
   setGdt(); /* Definicio de la taula de segments de memoria */
   setIdt(); /* Definicio del vector de interrupcions */
+  writeMSR(0x174, __KERNEL_CS);
+  writeMSR(0x175, INITIAL_ESP);
+  writeMSR(0x176, syscall_handler_sysenter);
   setTSS(); /* Definicio de la TSS */
 
   /* Initialize Memory */
@@ -100,6 +108,8 @@ int __attribute__((__section__(".text.main")))
 
 
   printk("Entering user mode...");
+
+  zeos_ticks = 0;
 
   enable_int();
   /*

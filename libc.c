@@ -68,26 +68,14 @@ int strlen(char *a)
   return i;
 }
 
-int write(int fd, char * buffer, int size){
-  int resultat = -1;
+int write_wrapper(int fd, char* buffer, int size);
+int write(int fd, char* buffer, int size) {
+  return write_wrapper(fd, buffer, size);
+}
 
-  __asm__ __volatile__(
-          "movl %1, %%ebx;"
-          "movl %2, %%ecx;"
-          "movl %3, %%edx;"
-          "movl $4, %%eax;"
-          "int $0x80;"
-          "movl %%eax, %0;"
-          : "=g" (resultat)
-          : "g" (fd), "g"(buffer), "g" (size)
-          : "ax", "bx", "cx", "dx"
-    );
 
-  if (resultat < 0){
-    errno = resultat;
-    return -1;
-  }
-  else return resultat;
-
+int gettime_wrapper();
+int gettime() {
+  return gettime_wrapper();
 }
 

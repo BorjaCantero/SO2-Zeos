@@ -35,13 +35,15 @@ SYSOBJ = \
 	utils.o \
 	hardware.o \
 	list.o \
-
+	MSR.o \
+	
 LIBZEOS = -L . -l zeos
 
 #add to USROBJ any object files required to complete the user program
 USROBJ = \
 	libc.o \
-	# libjp.a \
+	libjp.a \
+	wrapper.o \
 
 all:zeos.bin
 
@@ -68,6 +70,12 @@ entry.s: entry.S $(INCLUDEDIR)/asm.h $(INCLUDEDIR)/segment.h # $(INCLUDEDIR)/key
 sys_call_table.s: sys_call_table.S $(INCLUDEDIR)/asm.h $(INCLUDEDIR)/segment.h
 	$(CPP) $(ASMFLAGS) -o $@ $<
 
+MSR.s: MSR.S $(INCLUDEDIR)/asm.h
+	$(CPP) $(ASMFLAGS) -o $@ $<	
+
+wrapper.s: wrapper.S $(INCLUDEDIR)/asm.h
+	$(CPP) $(ASMFLAGS) -o $@ $<	
+
 user.o:user.c $(INCLUDEDIR)/libc.h
 
 interrupt.o:interrupt.c $(INCLUDEDIR)/interrupt.h $(INCLUDEDIR)/segment.h $(INCLUDEDIR)/types.h
@@ -86,8 +94,7 @@ sys.o:sys.c $(INCLUDEDIR)/devices.h
 
 utils.o:utils.c $(INCLUDEDIR)/utils.h
 
-
-system.o:system.c $(INCLUDEDIR)/hardware.h system.lds $(SYSOBJ) $(INCLUDEDIR)/segment.h $(INCLUDEDIR)/types.h $(INCLUDEDIR)/interrupt.h $(INCLUDEDIR)/system.h $(INCLUDEDIR)/sched.h $(INCLUDEDIR)/mm.h $(INCLUDEDIR)/io.h $(INCLUDEDIR)/mm_address.h  
+system.o:system.c $(INCLUDEDIR)/hardware.h system.lds $(SYSOBJ) $(INCLUDEDIR)/segment.h $(INCLUDEDIR)/types.h $(INCLUDEDIR)/interrupt.h $(INCLUDEDIR)/system.h $(INCLUDEDIR)/sched.h $(INCLUDEDIR)/mm.h $(INCLUDEDIR)/io.h $(INCLUDEDIR)/mm_address.h #$(INCLUDEDIR)/entry.h 
 
 
 system: system.o system.lds $(SYSOBJ)

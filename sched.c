@@ -5,11 +5,16 @@
 #include <sched.h>
 #include <mm.h>
 #include <io.h>
+#include <list.h>
+#include <utils.h>
 
 union task_union task[NR_TASKS]
   __attribute__((__section__(".data.task")));
 
-#if 0
+struct list_head freequeue;
+struct list_head readyqueue;
+
+#if 1
 struct task_struct *list_head_to_task_struct(struct list_head *l)
 {
   return list_entry( l, struct task_struct, list);
@@ -58,12 +63,26 @@ void init_idle (void)
 
 void init_task1(void)
 {
+	struct list_head * l = list_first(&freequeue);
+	list_del(l);
+	
+	struct task_struct * t = (task_struct *) ((unsigned long int) l - sizeof(int));
+	t->PID = 1;
+	set_user_pages(t);
+	
+	list_add(l, &readyqueue);
 }
 
 
 void init_sched()
 {
-
+	INIT_LIST_HEAD(&freequeue);
+	
+	for (int i = 0; i < NR_TASKS; i++) {
+		list_add_tail(&(task[i].task.list), list_first(&freequeue));
+	}
+	
+	INIT_LIST_HEAD(&readyqueue);
 }
 
 struct task_struct* current()

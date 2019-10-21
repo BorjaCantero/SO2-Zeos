@@ -19,6 +19,8 @@
 #define LECTURA 0
 #define ESCRIPTURA 1
 
+int zeos_ticks;
+
 int check_fd(int fd, int permissions)
 {
   if (fd!=1) return - EBADF; /*EBADF*/
@@ -58,21 +60,28 @@ int sys_write(int fd, char * buffer, int size)
 	{
 		if (buffer == NULL) 
 			errcode = - EFAULT;
-		else if (size <= 0)
+		else if (size < 0)
 			errcode = - EINVAL;
 		else 
 		{
 			errcode = size;
 			int error = 0;
 			int copied = 0;
+			char *buffer1 = buffer;
 			while (error >= 0 &&  copied < size){
 				int sizeOfCopy = min(4, size - copied); 
-				error = copy_from_user(buffer, buffer_copy, sizeOfCopy);
+				error = copy_from_user(buffer1, buffer_copy, sizeOfCopy);
 				if (error < 0) return error;
 				sys_write_console(buffer_copy,sizeOfCopy);
 				copied += 4;
+				buffer1 += 4;
 			}
+			errcode = size;
 		}
 	}
 	return errcode;
+}
+
+int sys_gettime(){
+	return zeos_ticks;
 }

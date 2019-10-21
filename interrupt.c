@@ -12,6 +12,7 @@
 
 Gate idt[IDT_ENTRIES];
 Register    idtR;
+extern int zeos_ticks;
 
 void setInterruptHandler(int vector, void (*handler)(), int maxAccessibleFromPL)
 {
@@ -68,7 +69,7 @@ void setIdt()
 
 
   //Interrupt handlers E1_check
-  //setInterruptHandler(32, clock_handler, 0);
+  setInterruptHandler(32, clock_handler, 0);
   setInterruptHandler(33, keyboard_handler, 0);
 
   setTrapHandler(0x80, system_call_handler, 3);
@@ -79,3 +80,7 @@ void setIdt()
   set_idt_reg(&idtR);
 }
 
+void clock_routine(){
+  ++zeos_ticks;
+  zeos_show_clock();
+}

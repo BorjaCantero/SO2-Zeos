@@ -76,20 +76,12 @@ ENTRY(keyboard_handler)
 	RESTORE_ALL
 	iret
 
-/**ENTRY(clock_handler)
+ENTRY(clock_handler)
 	SAVE_ALL
 	EOI
 	call clock_routine
 	RESTORE_ALL
-	iret**/
-
-/**ENTRY(handler_pagefault)
-	SAVE_ALL
-	EOI
-	call pagefault_rutine
-	RESTORE_ALL
-	iret**/
-
+	iret
 
 ENTRY(system_call_handler)
 	SAVE_ALL
@@ -128,3 +120,4 @@ sysenter_fin:
 	movl 12(%esp), %ecx 	//user stack address
 	sti 					//enable interrupts again
 	sysexit
+
