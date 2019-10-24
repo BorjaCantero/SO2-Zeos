@@ -57,7 +57,7 @@ int __attribute__ ((__section__(".text.main")))
 	itoa(gettime(), a);
 	write(1, a, strlen(a));
 	*/
-    
+	
 	while(1) { 
 	}
 }

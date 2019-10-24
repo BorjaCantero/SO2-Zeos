@@ -14,6 +14,8 @@ union task_union task[NR_TASKS]
 struct list_head freequeue;
 struct list_head readyqueue;
 
+struct task_struct* idle_task;
+
 #if 1
 struct task_struct *list_head_to_task_struct(struct list_head *l)
 {
@@ -58,7 +60,21 @@ void cpu_idle(void)
 
 void init_idle (void)
 {
-
+	struct list_head * l = list_first(&freequeue);
+	list_del(l);
+	
+	struct task_struct * t = list_head_to_task_struct(l);
+	t->PID = 0;
+	t->dir_pages_baseAddr = allocate_DIR(t);
+	set_user_pages(t);
+	
+	unsigned int* p = ((unsigned int) KERNEL_ESP((union task_union*) t) - 4);
+	*p = &cpu_idle;
+	p -= 1;
+	*p = 0;
+	t->kernel_esp = p;
+	
+	idle_task = t;
 }
 
 void init_task1(void)
@@ -66,11 +82,14 @@ void init_task1(void)
 	struct list_head * l = list_first(&freequeue);
 	list_del(l);
 	
-	struct task_struct * t = (task_struct *) ((unsigned long int) l - sizeof(int));
+	struct task_struct * t = list_head_to_task_struct(l);
 	t->PID = 1;
+	t->dir_pages_baseAddr = allocate_DIR(t);
 	set_user_pages(t);
 	
-	list_add(l, &readyqueue);
+	tss.esp0 = KERNEL_ESP((union task_union*) t);
+	writeMSR(0x175, KERNEL_ESP((union task_union*) t));
+	set_cr3(get_DIR(t));
 }
 
 
