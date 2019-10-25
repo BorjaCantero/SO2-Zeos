@@ -48,6 +48,23 @@ page_table_entry * allocate_DIR(struct task_struct *t)
 	return (page_table_entry*) &dir_pages[pos];
 }
 
+void inner_task_switch(union task_union* new){
+
+	//posa els valors d'on es troba la pila del nou proces
+	tss.esp0 = KERNEL_ESP((union task_union*) new);
+	writeMSR(0x175, KERNEL_ESP((union task_union*) new));
+
+	struct task_struct* newTask = &new->task;
+
+	set_cr3(get_DIR(newTask));
+
+	//guardar valor ebp del proces antic
+	current()->kernel_esp = get_ebp();
+
+	//canviar el system stack al del nou proces
+	change_system_stack(newTask->kernel_esp);
+} 
+
 void cpu_idle(void)
 {
 	__asm__ __volatile__("sti": : :"memory");

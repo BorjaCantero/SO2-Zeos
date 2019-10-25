@@ -53,6 +53,8 @@ page_table_entry * get_PT (struct task_struct *t) ;
 
 page_table_entry * get_DIR (struct task_struct *t) ;
 
+void inner_task_switch(union task_union* new);
+
 /* Headers for the scheduling policy */
 void sched_next_rr();
 void update_process_state_rr(struct task_struct *t, struct list_head *dest);
