@@ -28,6 +28,7 @@ SYSOBJ = \
 	sys_call_table.o \
 	io.o \
 	keyboard.o \
+	taskswitch.o\
 	sched.o \
 	sys.o \
 	mm.o \
@@ -76,7 +77,7 @@ MSR.s: MSR.S $(INCLUDEDIR)/asm.h
 wrapper.s: wrapper.S $(INCLUDEDIR)/asm.h
 	$(CPP) $(ASMFLAGS) -o $@ $<	
 
-sched.s: sched.S $(INCLUDEDIR)/asm.h
+taskswitch.s: taskswitch.S $(INCLUDEDIR)/asm.h
 	$(CPP) $(ASMFLAGS) -o $@ $<
 
 user.o:user.c $(INCLUDEDIR)/libc.h

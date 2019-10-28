@@ -58,6 +58,6 @@ int __attribute__ ((__section__(".text.main")))
 	write(1, a, strlen(a));
 	*/
 	
-	while(1) { 
+	while(1) {
 	}
 }

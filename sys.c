@@ -20,6 +20,8 @@
 #define ESCRIPTURA 1
 
 int zeos_ticks;
+extern struct list_head readyqueue;
+extern struct list_head freequeue;
 
 int check_fd(int fd, int permissions)
 {
@@ -40,11 +42,21 @@ int sys_getpid()
 
 int sys_fork()
 {
-  int PID=-1;
+  if (list_empty(&freequeue)) 
+		return -1;
+	struct list_head * l = list_first(&freequeue);
+	list_del(l);
+	
+	struct task_struct * h = list_head_to_task_struct(l);
+	copy_data(current, h, KERNEL_STACK_SIZE);
+	
+	h->dir_pages_baseAddr = allocate_DIR(h);
+	
+	if (alloc_frame() == -1) return -1;
 
-  // creates the child process
-  
-  return PID;
+	page_table_entry * h_paget = get_PT(h);
+	page_table_entry * p_paget = get_PT(current());	
+	
 }
 
 void sys_exit()

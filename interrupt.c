@@ -12,6 +12,9 @@
 
 Gate idt[IDT_ENTRIES];
 Register    idtR;
+
+extern struct list_head readyqueue;
+extern struct task_struct* idle_task;
 extern int zeos_ticks;
 
 void setInterruptHandler(int vector, void (*handler)(), int maxAccessibleFromPL)
@@ -81,6 +84,6 @@ void setIdt()
 }
 
 void clock_routine(){
-  ++zeos_ticks;
-  zeos_show_clock();
+	++zeos_ticks;
+	zeos_show_clock();
 }

@@ -56,13 +56,13 @@ void inner_task_switch(union task_union* new){
 
 	struct task_struct* newTask = &new->task;
 
-	set_cr3(get_DIR(newTask));
-
 	//guardar valor ebp del proces antic
 	current()->kernel_esp = get_ebp();
 
 	//canviar el system stack al del nou proces
 	change_system_stack(newTask->kernel_esp);
+	
+	set_cr3(get_DIR(newTask));
 } 
 
 void cpu_idle(void)
@@ -71,7 +71,7 @@ void cpu_idle(void)
 
 	while(1)
 	{
-	;
+		//sys_write(1, "IDLE\n", 5);
 	}
 }
 
